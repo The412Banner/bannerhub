@@ -17461,8 +17461,7 @@
     <public type="raw" name="emoji_category_people_gender_inclusive" id="0x7f12000a" />
     <public type="raw" name="emoji_category_symbols" id="0x7f12000b" />
     <public type="raw" name="emoji_category_travel_places" id="0x7f12000c" />
-    <public type="raw" name="firebase_common_keep" id="0x7f12000d" />
-    <public type="raw" name="firebase_crashlytics_keep" id="0x7f12000e" />
+
     <public type="raw" name="ineffective" id="0x7f12000f" />
     <public type="raw" name="joinparty" id="0x7f120010" />
     <public type="raw" name="launcher_en" id="0x7f120011" />
