@@ -102,6 +102,15 @@ Tracks every commit, patch, and change applied to the GameHub 5.3.5 ReVanced APK
 - **apktool version:** 2.9.3 (pinned in workflow)
 - **DataBinding note:** The main launcher uses DataBinding. New views added via layout XML patches can be wired via `getMDataBind().getRoot().findViewById()` in `initView` without touching the binding impl classes
 
+### [release] — v1.0.5 marked as stable release
+**Commit:** `dad069f` | **Tag:** v1.0.5 ✅ **STABLE**
+#### What changed
+- v1.0.5 build succeeded and promoted to stable release
+- Release description written covering all applied patches: "My Games" tab rename + BCI launcher button
+- Progress log added to repo
+
+---
+
 ## Planned Work
 
 - [ ] Option B: Embed BCI component manager as a full in-app tab (requires Kotlin compile → smali merge pipeline)
