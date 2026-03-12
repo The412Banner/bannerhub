@@ -43,6 +43,8 @@ jobs:
         run: |
           # raws.xml contains Firebase boolean entries that aapt2 rejects (expects file refs)
           rm -f apktool_out/res/values/raws.xml
+          # Remove the matching public.xml declarations or aapt2 errors on missing symbols
+          sed -i '/firebase_common_keep\|firebase_crashlytics_keep/d' apktool_out/res/values/public.xml
 
       - name: Apply patches
         run: |
