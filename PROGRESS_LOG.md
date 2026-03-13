@@ -4,6 +4,43 @@ Tracks every commit, patch, and change applied to the GameHub 5.3.5 ReVanced APK
 
 ---
 
+## Session 6 — 2026-03-13
+
+### [planned] — Backlog / Upcoming Work
+Items identified from code review — prioritized by impact:
+
+#### 1. Confirm before inject ⚠️ (high priority — data safety)
+- `injectFile()` wipes the entire component folder before extracting — no warning given
+- Add an `AlertDialog` on "Inject file..." tap: "Replace contents of [component]? This cannot be undone."
+- Only proceed to `pickFile()` if user confirms
+
+#### 2. Back + Exit buttons (pending from previous session)
+- Add a horizontal button row below the title header, above the ListView
+- **Back** — navigates up one level (options → components) or closes the activity if already at root
+- **Exit** — always calls `finish()` to close the activity immediately
+- Buttons should be outside the list, not list items
+
+#### 3. "Injecting..." progress toast at thread start
+- Currently no visual feedback between file pick and success/fail toast
+- Post a "Injecting, please wait..." toast to the UI thread at the top of `$1.run()` before calling `WcpExtractor.extract()`
+- Prevents users from thinking the app froze on large WCP files
+
+#### 4. Sort components alphabetically
+- `listFiles()` returns folders in filesystem order (non-deterministic)
+- Add `Arrays.sort()` on the components `File[]` before building the display name array
+- One-line change in `showComponents()`
+
+#### 5. Clear label option in options menu
+- No way to remove a `[-> filename]` SharedPreferences label once set
+- Add a 4th item "Clear label" to `showOptions()` that removes the key from `bh_injected` SharedPreferences
+- Handle `pswitch_3` in `onItemClick()` packed-switch
+
+#### 6. Component count in title
+- Update the title `TextView` text after components are loaded: "Banners Component Injector (N)"
+- Requires storing a reference to the title `TextView` as an activity field so `showComponents()` can update it
+
+---
+
 ## Session 5 — 2026-03-12
 
 ### [stable] — v2.2.0 — Stable release: Multi-APK Builds & AOSP Testkeys (2026-03-12)
