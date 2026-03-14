@@ -4,15 +4,19 @@ Tracks every commit, patch, and change applied to the GameHub 5.3.5 ReVanced APK
 
 ---
 
-## v2.2.2 — feat: per-variant display labels (2026-03-14)
-**Commit:** `8f435ce` | **Tag:** `v2.2.2`
+## v2.2.2 — feat: per-variant display labels + full release notes (2026-03-14)
+**Commit:** `8f435ce` (code), `cc06d32` (docs) | **Tag:** `v2.2.2`
 
 ### What changed
 - Each APK variant now sets its own `android:label` in AndroidManifest before rebuild
-- Normal → "GameHub Revanced", PuBG → "GameHub Revanced PuBG", etc.
+  - Normal → "GameHub Revanced", PuBG → "GameHub Revanced PuBG", AnTuTu → "GameHub Revanced AnTuTu", Ludashi → "GameHub Revanced Ludashi", Genshin → "GameHub Revanced Genshin"
+- Release description updated with full app feature set + credits to @Nightwalker743 for RTS controls
+- README updated: credit link, display name column in install table, asterisk note on configurable gestures
 
 ### Files touched
 - `.github/workflows/build.yml`
+- `README.md`
+- `PROGRESS_LOG.md`
 
 ---
 
