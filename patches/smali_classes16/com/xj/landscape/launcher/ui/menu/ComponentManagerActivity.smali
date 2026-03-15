@@ -165,7 +165,7 @@
     .locals 4
     const/4 v0, 0x1
     iput v0, p0, Lcom/xj/landscape/launcher/ui/menu/ComponentManagerActivity;->mode:I
-    const/4 v0, 0x3
+    const/4 v0, 0x4
     new-array v0, v0, [Ljava/lang/String;
     const/4 v1, 0x0
     const-string v2, "Inject/Replace file..."
@@ -174,6 +174,9 @@
     const-string v2, "Backup"
     aput-object v2, v0, v1
     const/4 v1, 0x2
+    const-string v2, "Remove"
+    aput-object v2, v0, v1
+    const/4 v1, 0x3
     const-string v2, "\u2190 Back"
     aput-object v2, v0, v1
     new-instance v1, Landroid/widget/ArrayAdapter;
@@ -261,6 +264,9 @@
     invoke-virtual {p0}, Lcom/xj/landscape/launcher/ui/menu/ComponentManagerActivity;->backupComponent()V
     return-void
     :sw1_2
+    invoke-virtual {p0}, Lcom/xj/landscape/launcher/ui/menu/ComponentManagerActivity;->removeComponent()V
+    return-void
+    :sw1_3
     invoke-virtual {p0}, Lcom/xj/landscape/launcher/ui/menu/ComponentManagerActivity;->showComponents()V
     return-void
 
@@ -298,6 +304,7 @@
         :sw1_0
         :sw1_1
         :sw1_2
+        :sw1_3
     .end packed-switch
 
     nop
@@ -558,6 +565,69 @@
     move-result-object v4
     invoke-virtual {v4}, Landroid/widget/Toast;->show()V
     invoke-virtual {p0}, Lcom/xj/landscape/launcher/ui/menu/ComponentManagerActivity;->showComponents()V
+    return-void
+.end method
+
+.method public removeComponent()V
+    .locals 6
+    iget-object v0, p0, Lcom/xj/landscape/launcher/ui/menu/ComponentManagerActivity;->components:[Ljava/io/File;
+    iget v1, p0, Lcom/xj/landscape/launcher/ui/menu/ComponentManagerActivity;->selectedIndex:I
+    aget-object v0, v0, v1
+
+    invoke-virtual {v0}, Ljava/io/File;->getName()Ljava/lang/String;
+    move-result-object v1
+
+    # unregister from EmuComponents in-memory HashMap
+    invoke-static {}, Lcom/xj/winemu/EmuComponents;->e()Lcom/xj/winemu/EmuComponents;
+    move-result-object v2
+    if-eqz v2, :skip_emu
+    iget-object v3, v2, Lcom/xj/winemu/EmuComponents;->a:Ljava/util/HashMap;
+    if-eqz v3, :skip_emu
+    invoke-virtual {v3, v1}, Ljava/util/HashMap;->remove(Ljava/lang/Object;)Ljava/lang/Object;
+    :skip_emu
+
+    # delete folder recursively
+    invoke-static {v0}, Lcom/xj/landscape/launcher/ui/menu/ComponentManagerActivity;->deleteDir(Ljava/io/File;)V
+
+    # toast "Removed: <name>"
+    new-instance v2, Ljava/lang/StringBuilder;
+    invoke-direct {v2}, Ljava/lang/StringBuilder;-><init>()V
+    const-string v3, "Removed: "
+    invoke-virtual {v2, v3}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    invoke-virtual {v2, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    invoke-virtual {v2}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+    move-result-object v2
+    const/4 v3, 0x1
+    invoke-static {p0, v2, v3}, Landroid/widget/Toast;->makeText(Landroid/content/Context;Ljava/lang/CharSequence;I)Landroid/widget/Toast;
+    move-result-object v2
+    invoke-virtual {v2}, Landroid/widget/Toast;->show()V
+
+    invoke-virtual {p0}, Lcom/xj/landscape/launcher/ui/menu/ComponentManagerActivity;->showComponents()V
+    return-void
+.end method
+
+.method public static deleteDir(Ljava/io/File;)V
+    .locals 5
+    invoke-virtual {p0}, Ljava/io/File;->listFiles()[Ljava/io/File;
+    move-result-object v0
+    if-eqz v0, :delete_self
+    array-length v1, v0
+    const/4 v2, 0x0
+    :del_loop
+    if-ge v2, v1, :delete_self
+    aget-object v3, v0, v2
+    invoke-virtual {v3}, Ljava/io/File;->isDirectory()Z
+    move-result v4
+    if-eqz v4, :del_file
+    invoke-static {v3}, Lcom/xj/landscape/launcher/ui/menu/ComponentManagerActivity;->deleteDir(Ljava/io/File;)V
+    goto :del_next
+    :del_file
+    invoke-virtual {v3}, Ljava/io/File;->delete()Z
+    :del_next
+    add-int/lit8 v2, v2, 0x1
+    goto :del_loop
+    :delete_self
+    invoke-virtual {p0}, Ljava/io/File;->delete()Z
     return-void
 .end method
 
