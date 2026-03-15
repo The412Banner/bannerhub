@@ -23,7 +23,13 @@
     invoke-virtual {p0, v0}, Landroidx/appcompat/app/AppCompatActivity;->setContentView(Landroid/view/View;)V
     iget-object v0, p0, Lcom/xj/landscape/launcher/ui/menu/ComponentManagerActivity;->listView:Landroid/widget/ListView;
     invoke-virtual {v0, p0}, Landroid/widget/AbsListView;->setOnItemClickListener(Landroid/widget/AdapterView$OnItemClickListener;)V
-    const-string v0, "Component Manager"
+    # Pad for status bar (top) and navigation bar (bottom)
+    const/4 v1, 0x1
+    invoke-virtual {v0, v1}, Landroid/view/View;->setFitsSystemWindows(Z)V
+    # Allow list to scroll behind the padding so no items are cut off
+    const/4 v1, 0x0
+    invoke-virtual {v0, v1}, Landroid/view/ViewGroup;->setClipToPadding(Z)V
+    const-string v0, "Banners Component Manager"
     invoke-virtual {p0, v0}, Landroid/app/Activity;->setTitle(Ljava/lang/CharSequence;)V
     invoke-virtual {p0}, Lcom/xj/landscape/launcher/ui/menu/ComponentManagerActivity;->showComponents()V
     return-void
