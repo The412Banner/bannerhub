@@ -1116,6 +1116,27 @@ gh release edit v2.2.6-pre --notes "..."
 
 ---
 
+---
+
+## Entry 021 — Title + system bar padding (v2.2.7-pre)
+**Date:** 2026-03-15  |  **Commit:** `5808a2a`  |  **Tag:** v2.2.7-pre
+
+### Changes
+- **Title:** `"Component Manager"` → `"Banners Component Manager"`
+- **`setFitsSystemWindows(true)`** on ListView: system automatically applies insets for status bar (top) and navigation bar (bottom)
+- **`setClipToPadding(false)`** on ListView: list scrolls behind the padding area so no items are permanently hidden
+
+### Root cause
+ListView was set as the raw content view with no inset handling. On devices with on-screen navigation buttons, the last few list items were obscured and untappable. Status bar caused similar issue at the top.
+
+### Files touched
+- `patches/smali_classes16/com/xj/landscape/launcher/ui/menu/ComponentManagerActivity.smali`
+
+### CI result
+✅ Passed
+
+---
+
 # Appendix C — Known constraints
 
 | Constraint | Detail |
