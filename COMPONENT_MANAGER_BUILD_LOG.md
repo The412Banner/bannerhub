@@ -1156,6 +1156,34 @@ Root cause: Some ZIPs (e.g. StevenMX `Turnip_v26.1.0_R4.zip`) contain `vulkan.ad
 
 ---
 
+## Entry 023 — Remove component option (v2.2.8-pre)
+**Date:** 2026-03-15  |  **Commit:** `5b39138`  |  **Tag:** v2.2.8-pre
+
+### Changes
+
+**New feature — Remove option in component options menu**
+Added "Remove" as a third option in the per-component options menu (Inject/Replace, Backup, **Remove**, Back).
+
+- `showOptions()`: expanded array from 3 → 4 items; "Remove" at index 2; "← Back" shifted to index 3.
+- `onItemClick()` mode=1 packed-switch: added `:sw1_2` → `removeComponent()`; renamed old `:sw1_2` (Back) to `:sw1_3`; packed-switch table updated to 4 entries.
+- New `removeComponent()V`: gets selected component folder + name, calls `EmuComponents.e().a.remove(name)` to unregister from in-memory HashMap (component disappears from GameHub selection menus immediately), calls `deleteDir()` to recursively delete the folder, shows "Removed: <name>" toast, refreshes component list.
+- New `deleteDir(File)V` static: recursive file/folder deleter — `listFiles()` → recurse into subdirs → `File.delete()` on each file → `File.delete()` on dir itself.
+
+### Root cause / design note
+`EmuComponents.a` (HashMap) is the runtime component registry. Removing from it causes the component to vanish from all selection menus for the current session. The folder deletion ensures the component cannot be re-injected without going through the normal inject flow. SharedPrefs (`sp_winemu_all_components12`) is not directly manipulated — GameHub validates file existence before using a component path, so a missing folder renders any persisted entry inert.
+
+### Files touched
+- `[MOD]` `patches/smali_classes16/com/xj/landscape/launcher/ui/menu/ComponentManagerActivity.smali`
+  - `showOptions()` — +1 array item, new "Remove" entry
+  - `onItemClick()` — new `:sw1_2` + `:sw1_3` labels; packed-switch extended
+  - `removeComponent()V` — new method, .locals 6
+  - `deleteDir(File)V` — new static method, .locals 5
+
+### CI result
+✅ Passed — run `23114139058` (3m41s)
+
+---
+
 # Appendix C — Known constraints
 
 | Constraint | Detail |

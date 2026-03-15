@@ -4,6 +4,33 @@ Tracks every commit, patch, and change applied to the GameHub 5.3.5 ReVanced APK
 
 ---
 
+## [pre] — v2.2.8-pre — Add Remove option to Component Manager (2026-03-15)
+**Commit:** `5b39138`  |  **Tag:** v2.2.8-pre  |  **CI run:** `23114139058` (3m41s ✓)
+
+### What changed
+- Added "Remove" to the per-component options menu (between Backup and Back)
+- Tapping Remove unregisters the component from `EmuComponents` in-memory HashMap, recursively deletes its folder from `components/`, shows "Removed: <name>" toast, returns to list
+- New `removeComponent()V` method and `deleteDir(File)V` static recursive helper
+
+### Files touched
+- `patches/smali_classes16/com/xj/landscape/launcher/ui/menu/ComponentManagerActivity.smali`
+
+---
+
+## [pre] — v2.2.7-pre — ZIP injection fixes: name/dir mismatch + libraryName rename (2026-03-15)
+**Commit:** `fd5e176`  |  **Tag:** v2.2.7-pre  |  **CI:** ✅
+
+### What changed
+- ZIP name/dir mismatch fixed: folder name is always the ZIP filename, `meta.json["name"]` no longer overwrites it
+- Wrong `.so` name fixed: reads `meta.json["libraryName"]` after extraction and renames to `libvulkan_freedreno.so` if different
+- Title TextView and system bar padding confirmed working
+
+### Files touched
+- `patches/smali_classes16/com/xj/landscape/launcher/ui/menu/ComponentInjectorHelper.smali`
+- `patches/smali_classes16/com/xj/landscape/launcher/ui/menu/ComponentManagerActivity.smali`
+
+---
+
 ## [pre] — v2.2.6-pre — Component menu visibility + FEXCore resilience (2026-03-15)
 **Commit:** `00a324a`  |  **Tag:** v2.2.6-pre  |  **CI run:** `23102478881` (3m37s ✓)
 
