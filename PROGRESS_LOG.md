@@ -4,6 +4,19 @@ Tracks every commit, patch, and change applied to the GameHub 5.3.5 ReVanced APK
 
 ---
 
+### [fix] — Component Manager: removed components no longer resurrect after restart (2026-08-22)
+**Branch:** `fix/component-manager-registry-purge` (off `main` `443b7c1`). Artifact-only per pre-release policy — no GitHub Release.
+
+#### Bug
+Removing a component in the Component Manager (single-remove or Remove All) cleared the runtime registry (`EmuComponents.a` HashMap) and the `banners_sources` source-tracking prefs, and deleted the on-disk folder — but never touched the **persistent** component registry `sp_winemu_all_components12` (the SharedPreferences file `EmuComponents.D()` writes to, keyed by `ComponentRepo.getName()` = the component folder name). On the next launch `EmuComponents.s()` reloaded every persisted entry back into the HashMap, so a removed component reappeared. The original design note assumed a missing folder made the persisted entry "inert" (GameHub file-existence validation); in practice the entry is resurrected.
+
+#### Fix
+`patches/smali_classes16/com/xj/landscape/launcher/ui/menu/ComponentManagerActivity.smali` — both removal methods now also `SharedPreferences.Editor.remove(dirName)` on `sp_winemu_all_components12`:
+- `removeComponent()` (`.locals 10`): purge block inserted after `:skip_emu`, before `deleteDir` (v1 = dirName; v2/v3 free after the HashMap unregister).
+- `removeAllComponents()` (`.locals 12`): registry SP opened once before the loop, held in v0 (the now-dead `EmuComponents` instance ref); each removed `.bh_injected` component's dirName (v6) purged inside the loop after `deleteDir` (v7 scratch). Remove-All stays scoped to `.bh_injected` components, so XiaoJi base-component entries are untouched.
+
+Both additions reuse the exact `getSharedPreferences → edit → remove → apply` opcode pattern already used by the adjacent `banners_sources` cleanup. Registers verified in-bounds; `.locals` unchanged. Not yet CI-assembled or device-proven.
+
 ### [v3.8.0-pre1] — Per-game PC Audio Settings: PulseAudio recording-compatible mode (2026-06-09)
 **Branch:** `feature/audio-recording-mode` (off `main` `6a312a0`). Pre-release artifact-only per policy — no GitHub Release.
 
